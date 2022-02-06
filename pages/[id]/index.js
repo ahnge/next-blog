@@ -1,12 +1,18 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const blogDetails = ({ blog }) => {
-  console.log(blog);
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
-      <h1>{blog.data.attributes.title}</h1>
-      <h3>{blog.data.attributes.author}</h3>
-      <p>{blog.data.attributes.body}</p>
+      <h1>{blog.attributes.title}</h1>
+      <h3>{blog.attributes.author}</h3>
+      <p>{blog.attributes.body}</p>
       <Link href={"/"}>go home</Link>
     </div>
   );
@@ -16,16 +22,17 @@ export default blogDetails;
 
 export const getStaticPaths = async () => {
   const res = await fetch("https://strapi-blog4.herokuapp.com/api/blogs");
-  const data = await res.json();
+  const blog = await res.json();
+  console.log(blog);
 
-  const paths = data.data.map((blog) => {
+  const ids = blog.data.map((bg) => {
     return {
-      params: { id: blog.id.toString() },
+      params: { id: bg.id.toString() },
     };
   });
 
   return {
-    paths,
+    paths: ids,
     fallback: true,
   };
 };
@@ -35,10 +42,11 @@ export const getStaticProps = async (context) => {
 
   const res = await fetch(`https://strapi-blog4.herokuapp.com/api/blogs/${id}`);
   const data = await res.json();
+  console.log(data);
 
   return {
     props: {
-      blog: data,
+      blog: data.data,
     },
   };
 };
