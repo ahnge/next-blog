@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const blogDetails = ({ blog }) => {
+const BlogDetails = ({ blog }) => {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -18,7 +18,7 @@ const blogDetails = ({ blog }) => {
   );
 };
 
-export default blogDetails;
+export default BlogDetails;
 
 export const getStaticPaths = async () => {
   const res = await fetch("https://strapi-blog4.herokuapp.com/api/blogs");
