@@ -1,8 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 const BlogDetails = ({ blog }) => {
   const router = useRouter();
+
+  const imgUrl = blog.attributes.img.data[0].attributes.url;
+  console.log(imgUrl);
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -14,6 +18,7 @@ const BlogDetails = ({ blog }) => {
       <h3>{blog.attributes.author}</h3>
       <p>{blog.attributes.body}</p>
       <Link href={"/"}>go home</Link>
+      <Image src={imgUrl} width={200} height={200}></Image>
     </div>
   );
 };
@@ -40,7 +45,9 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const id = context.params.id;
 
-  const res = await fetch(`https://strapi-blog4.herokuapp.com/api/blogs/${id}`);
+  const res = await fetch(
+    `https://strapi-blog4.herokuapp.com/api/blogs/${id}?populate=img`
+  );
   const data = await res.json();
   console.log(data);
 
