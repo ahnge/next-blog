@@ -1,12 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { buildUrl } from "cloudinary-build-url";
 
 const BlogDetails = ({ blog }) => {
   const router = useRouter();
 
-  const imgUrl = blog.attributes.img.data[0].attributes.url;
-  console.log(imgUrl);
+  const imgHash = blog.attributes.img.data[0].attributes.hash;
+
+  const imgSrc = buildUrl(imgHash, {
+    cloud: {
+      cloudName: "ddwguc7vu",
+    },
+  });
+
+  const blurImgSrc = buildUrl(imgHash, {
+    cloud: {
+      cloudName: "ddwguc7vu",
+    },
+    transformations: {
+      effect: "blur:1000",
+      quality: 1,
+    },
+  });
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -18,7 +34,8 @@ const BlogDetails = ({ blog }) => {
       <h3>{blog.attributes.author}</h3>
       <p>{blog.attributes.body}</p>
       <Link href={"/"}>go home</Link>
-      <Image src={imgUrl} width={200} height={200}></Image>
+      <Image src={imgSrc} width={200} height={200} />
+      <Image src={blurImgSrc} width={200} height={200} unoptimized={true} />
     </div>
   );
 };
